@@ -2,11 +2,12 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net"></script>
     <title>Aero Finance Pro - Final</title>
     <style>
+        html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
         .aero-glass {
             background: rgba(255, 255, 255, 0.4);
             backdrop-filter: blur(15px) saturate(180%);
@@ -23,23 +24,26 @@
         }
         .btn-aero { border-top: 1px solid rgba(255,255,255,0.5); transition: all 0.2s; cursor: pointer; }
         .btn-aero:active { transform: scale(0.95); }
-        .delete-btn { opacity: 0; transition: opacity 0.2s; }
+        .delete-btn { opacity: 1; md:opacity: 0; transition: opacity 0.2s; }
         li:hover .delete-btn { opacity: 1; }
+        
+        /* Ajuste para o gráfico não sumir no mobile */
+        canvas { max-width: 100% !important; max-height: 250px !important; }
     </style>
 </head>
 <body class="flex items-center justify-center p-4 font-sans select-none">
 
-    <div class="relative w-full max-w-5xl aero-glass rounded-[40px] shadow-2xl overflow-hidden my-8">
+    <div class="relative w-full max-w-5xl aero-glass rounded-[40px] shadow-2xl overflow-hidden my-4 md:my-8">
         <div class="absolute inset-0 glossy-reflection pointer-events-none h-32"></div>
 
-        <div class="p-8 relative">
-            <header class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-                <h1 class="text-4xl font-black text-blue-900 italic tracking-tighter drop-shadow-md">
+        <div class="p-6 md:p-8 relative">
+            <header class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 text-center md:text-left">
+                <h1 class="text-3xl md:text-4xl font-black text-blue-900 italic tracking-tighter drop-shadow-md">
                     Aero<span class="text-green-600">Finance</span>
                 </h1>
                 
                 <div class="flex items-center gap-2 bg-white/40 p-2 rounded-full border border-white">
-                    <select id="monthSelect" onchange="updateUI()" class="bg-white/80 rounded-full px-4 py-1 text-blue-900 font-bold text-sm outline-none">
+                    <select id="monthSelect" onchange="updateUI()" class="bg-white/80 rounded-full px-3 py-1 text-blue-900 font-bold text-xs md:text-sm outline-none">
                         <option value="0">Janeiro</option><option value="1">Fevereiro</option>
                         <option value="2">Março</option><option value="3">Abril</option>
                         <option value="4">Maio</option><option value="5">Junho</option>
@@ -47,7 +51,7 @@
                         <option value="8">Setembro</option><option value="9">Outubro</option>
                         <option value="10">Novembro</option><option value="11">Dezembro</option>
                     </select>
-                    <select id="yearSelect" onchange="updateUI()" class="bg-white/80 rounded-full px-4 py-1 text-blue-900 font-bold text-sm outline-none">
+                    <select id="yearSelect" onchange="updateUI()" class="bg-white/80 rounded-full px-3 py-1 text-blue-900 font-bold text-xs md:text-sm outline-none">
                         <option>2024</option><option>2025</option><option selected>2026</option>
                     </select>
                 </div>
@@ -63,27 +67,27 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div class="lg:col-span-2 space-y-6">
-                    <!-- Dashboard de Saldo -->
-                    <div class="grid grid-cols-3 gap-4 text-center font-bold">
+                    <!-- Dashboard de Saldo CORRIGIDO PARA MOBILE -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center font-bold">
                         <div class="bg-white/50 p-4 rounded-3xl border border-white">
                             <p class="text-[10px] uppercase text-blue-700">Receitas</p>
-                            <p id="totalProfit" class="text-2xl text-green-600">R$ 0,00</p>
+                            <p id="totalProfit" class="text-xl md:text-2xl text-green-600 break-words">R$ 0,00</p>
                         </div>
                         <div class="bg-white/50 p-4 rounded-3xl border border-white">
                             <p class="text-[10px] uppercase text-blue-700">Gastos</p>
-                            <p id="totalExpense" class="text-2xl text-red-500">R$ 0,00</p>
+                            <p id="totalExpense" class="text-xl md:text-2xl text-red-500 break-words">R$ 0,00</p>
                         </div>
                         <div id="balanceCard" class="bg-blue-500/20 p-4 rounded-3xl border-2 border-white transition-colors">
                             <p class="text-[10px] uppercase text-blue-800">Saldo</p>
-                            <p id="balance" class="text-2xl text-blue-900">R$ 0,00</p>
+                            <p id="balance" class="text-xl md:text-2xl text-blue-900 break-words">R$ 0,00</p>
                         </div>
                     </div>
 
                     <!-- Formulário -->
                     <div class="bg-white/30 p-6 rounded-[30px] border border-white/50 space-y-4 shadow-inner">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <input type="text" id="descInput" placeholder="Ex: Salário" class="bg-white/80 rounded-2xl px-5 py-3 outline-none">
-                            <input type="number" id="valInput" placeholder="Valor R$" class="bg-white/80 rounded-2xl px-5 py-3 outline-none">
+                            <input type="text" id="descInput" placeholder="Ex: Salário" class="bg-white/80 rounded-2xl px-5 py-3 outline-none w-full">
+                            <input type="number" id="valInput" placeholder="Valor R$" class="bg-white/80 rounded-2xl px-5 py-3 outline-none w-full">
                         </div>
                         <div class="flex gap-4">
                             <button onclick="addEntry('profit')" class="btn-aero flex-grow bg-gradient-to-b from-green-400 to-green-600 text-white font-bold py-3 rounded-2xl shadow-lg">LUCRO (+)</button>
@@ -91,7 +95,7 @@
                         </div>
                     </div>
 
-                    <!-- Listas com botão de deletar -->
+                    <!-- Listas -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <h3 class="text-[10px] font-black text-blue-900 uppercase ml-2 mb-2 italic">Entradas</h3>
@@ -104,15 +108,17 @@
                     </div>
                 </div>
 
-                <!-- Gráfico de Pizza (Rosca) -->
+                <!-- Gráfico -->
                 <div class="bg-white/40 p-6 rounded-[40px] border border-white flex flex-col items-center justify-center min-h-[300px]">
                     <h3 class="text-blue-900 font-bold mb-4 italic text-sm">Distribuição do Mês</h3>
-                    <canvas id="financeChart"></canvas>
+                    <div class="w-full flex justify-center">
+                        <canvas id="financeChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="bg-white/20 p-3 text-center text-[10px] text-blue-900 font-bold border-t border-white/40 uppercase tracking-[3px]">
-            AeroFinances v4.1 | Made By ~LC03 | 🫧
+            AeroFinances v4.2 | Made By ~LC03 | 🫧
         </div>
     </div>
 
@@ -120,7 +126,6 @@
         let db = JSON.parse(localStorage.getItem('aeroFinanceDB')) || {};
         let myChart;
 
-        // Som de Bolha Sintetizado
         function playSound() {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -144,27 +149,24 @@
         function updateUI() {
             const key = getCurrentKey();
             if (!db[key]) db[key] = { profits: [], expenses: [] };
-
             const pList = document.getElementById('profitList');
             const eList = document.getElementById('expenseList');
             pList.innerHTML = ''; eList.innerHTML = '';
-
             let totalP = 0; let totalE = 0;
 
             db[key].profits.forEach((item, i) => {
                 totalP += item.value;
                 pList.appendChild(createListItem(item, i, 'profit'));
             });
-
             db[key].expenses.forEach((item, i) => {
                 totalE += item.value;
                 eList.appendChild(createListItem(item, i, 'expense'));
             });
 
-            document.getElementById('totalProfit').innerText = `R$ ${totalP.toFixed(2)}`;
-            document.getElementById('totalExpense').innerText = `R$ ${totalE.toFixed(2)}`;
+            document.getElementById('totalProfit').innerText = `R$ ${totalP.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('totalExpense').innerText = `R$ ${totalE.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
             const bal = totalP - totalE;
-            document.getElementById('balance').innerText = `R$ ${bal.toFixed(2)}`;
+            document.getElementById('balance').innerText = `R$ ${bal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
             document.getElementById('balanceCard').style.backgroundColor = bal >= 0 ? 'rgba(59, 130, 246, 0.2)' : 'rgba(239, 68, 68, 0.2)';
 
             updateChart(totalP, totalE);
@@ -176,11 +178,11 @@
             li.className = "bg-white/80 p-3 rounded-xl flex justify-between items-center border border-white shadow-sm hover:translate-x-1 transition-all";
             li.innerHTML = `
                 <div class="flex items-center gap-3">
-                    <div class="w-4 h-4 rounded-full ${type === 'profit' ? 'bg-green-400' : 'bg-red-400'} border-2 border-white shadow-sm"></div>
-                    <span class="text-blue-900 text-sm font-medium">${item.desc}</span>
+                    <div class="w-3 h-3 rounded-full ${type === 'profit' ? 'bg-green-400' : 'bg-red-400'} border-2 border-white shadow-sm"></div>
+                    <span class="text-blue-900 text-xs md:text-sm font-medium truncate max-w-[100px] md:max-w-none">${item.desc}</span>
                 </div>
-                <div class="flex items-center gap-4">
-                    <span class="font-bold ${type === 'profit' ? 'text-green-600' : 'text-red-500'} text-sm">R$ ${item.value.toFixed(2)}</span>
+                <div class="flex items-center gap-2 md:gap-4">
+                    <span class="font-bold ${type === 'profit' ? 'text-green-600' : 'text-red-500'} text-xs md:text-sm">R$ ${item.value.toFixed(2)}</span>
                     <button onclick="deleteEntry('${type}', ${index})" class="delete-btn text-red-500 hover:scale-125 transition-transform font-bold px-2">✕</button>
                 </div>
             `;
@@ -192,15 +194,11 @@
             const valInput = document.getElementById('valInput');
             const desc = descInput.value;
             const val = parseFloat(valInput.value);
-
             if (!desc || isNaN(val)) return;
-
             const key = getCurrentKey();
             db[key][type === 'profit' ? 'profits' : 'expenses'].push({desc, value: val});
-            
             playSound();
-            descInput.value = '';
-            valInput.value = '';
+            descInput.value = ''; valInput.value = '';
             updateUI();
         }
 
@@ -225,7 +223,12 @@
                         borderWidth: 4
                     }]
                 },
-                options: { plugins: { legend: { display: false } }, cutout: '75%' }
+                options: { 
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }, 
+                    cutout: '70%' 
+                }
             });
         }
 
@@ -239,27 +242,16 @@
         }
 
         function importData(event) {
-            const files = event.target.files;
-            if (!files || files.length === 0) return;
-
             const reader = new FileReader();
             reader.onload = (e) => {
                 try {
-                    const imported = JSON.parse(e.target.result);
-                    // Aceita se for um objeto (formato do DB)
-                    if (imported && typeof imported === 'object') {
-                        db = imported;
-                        localStorage.setItem('aeroFinanceDB', JSON.stringify(db));
-                        updateUI();
-                        playSound();
-                        alert("Backup restaurado!");
-                    } else {
-                        playSound();
-                        throw new Error();
-                    }
-                } catch(err) { alert("Arquivo Carregado com Sucesso!"); }
+                    db = JSON.parse(e.target.result);
+                    localStorage.setItem('aeroFinanceDB', JSON.stringify(db));
+                    updateUI();
+                    alert("Backup restaurado!");
+                } catch(err) { alert("Arquivo carregado!"); }
             };
-            reader.readAsText(files[0]); // Pega o primeiro arquivo explicitamente
+            reader.readAsText(event.target.files[0]);
             event.target.value = '';
         }
 
@@ -270,8 +262,6 @@
                 updateUI();
             }
         }
-
-        // Iniciar
         updateUI();
     </script>
 </body>
